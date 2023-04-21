@@ -1,5 +1,5 @@
 import { Message } from 'semantic-ui-react';
-
+import { v4 as uuid } from 'uuid';
 interface Props {
     errors: string[];
 }
@@ -10,7 +10,7 @@ const ValidationError = ({errors} : Props) => {
             {errors && (
                 <Message.List>
                     {errors.map((error: string, i: number) => (
-                        <Message.Item key={i}>{error}</Message.Item>
+                        <Message.Item key={`${uuid()}`}>{error}</Message.Item>
                     ))}
                 </Message.List>
             )}
