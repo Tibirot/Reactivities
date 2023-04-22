@@ -6,11 +6,11 @@ using Persistence;
 
 namespace Application.Activities;
 
-public class Create
+public abstract class Create
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public Activity Activity { get; set; }
+        public Activity Activity { get; init; }
     }
 
     public class CommandValidator : AbstractValidator<Command>
@@ -30,8 +30,8 @@ public class Create
         }
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            await _context.Activities.AddAsync(request.Activity);
-            var result = await _context.SaveChangesAsync() > 0;
+            await _context.Activities.AddAsync(request.Activity, cancellationToken);
+            var result = await _context.SaveChangesAsync(cancellationToken) > 0;
             return !result ? Result<Unit>.Failure("Failed to create activity") : Result<Unit>.Success(Unit.Value);
         }
     }

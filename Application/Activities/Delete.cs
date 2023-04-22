@@ -4,11 +4,11 @@ using Persistence;
 
 namespace Application.Activities;
 
-public class Delete
+public abstract class Delete
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; init; }
     }
 
     public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -21,10 +21,10 @@ public class Delete
 
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var activity = await _context.Activities.FindAsync(request.Id);
+            var activity = await _context.Activities.FindAsync(new object[] { request.Id }, cancellationToken: cancellationToken);
             if (activity == null) return null;
             _context.Remove(activity);
-            var result = await _context.SaveChangesAsync() > 0;
+            var result = await _context.SaveChangesAsync(cancellationToken) > 0;
             return !result ? Result<Unit>.Failure("Failed to delete activity") : Result<Unit>.Success(Unit.Value);
         }
     }

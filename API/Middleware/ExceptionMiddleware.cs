@@ -29,7 +29,7 @@ public class ExceptionMiddleware
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             var response = _env.IsDevelopment()
-                ? new AppException(context.Response.StatusCode, e.Message, e.StackTrace?.ToString())
+                ? new AppException(context.Response.StatusCode, e.Message, e.StackTrace)
                 : new AppException(context.Response.StatusCode, "Internal Server Error");
             var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
             var json = JsonSerializer.Serialize(response, options);

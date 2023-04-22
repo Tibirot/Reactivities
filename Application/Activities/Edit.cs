@@ -7,11 +7,11 @@ using Persistence;
 
 namespace Application.Activities;
 
-public class Edit
+public abstract class Edit
 {
     public class Command : IRequest<Result<Unit>>
     {
-        public Activity Activity { get; set; }
+        public Activity Activity { get; init; }
     }
     
     public class CommandValidator : AbstractValidator<Create.Command>
@@ -33,12 +33,12 @@ public class Edit
         }
         public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var activity = await _context.Activities.FindAsync(request.Activity.Id);
+            var activity = await _context.Activities.FindAsync(new object[] { request.Activity.Id }, cancellationToken: cancellationToken);
             if (activity == null) return null;
             
             _mapper.Map(request.Activity, activity);
             
-            var result = await _context.SaveChangesAsync() > 0;
+            var result = await _context.SaveChangesAsync(cancellationToken) > 0;
             return !result ? Result<Unit>.Failure("Failed to edit activity") : Result<Unit>.Success(Unit.Value);
         }
     }

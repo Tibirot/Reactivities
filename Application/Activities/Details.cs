@@ -5,11 +5,11 @@ using Persistence;
 
 namespace Application.Activities;
 
-public class Details
+public abstract class Details
 {
     public class Query : IRequest<Result<Activity>>
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; init; }
     }
 
     public class Handler : IRequestHandler<Query, Result<Activity>>
@@ -22,7 +22,7 @@ public class Details
         }
         public async Task<Result<Activity>> Handle(Query request, CancellationToken cancellationToken)
         {
-            var activity = await _context.Activities.FindAsync(request.Id);
+            var activity = await _context.Activities.FindAsync(new object[] { request.Id }, cancellationToken: cancellationToken);
             return Result<Activity>.Success(activity);
         }
     }
