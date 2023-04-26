@@ -12,24 +12,24 @@ import ActivityDetailedInfo from './ActivityDetailedInfo';
 const ActivityDetails = () => {
 
     const { activityStore } = useStore();
-    const { selectedActivity, loadActivity, loadingInitial } = activityStore;
+    const { selectedActivity: activity, loadActivity, loadingInitial } = activityStore;
     const { id } = useParams();
 
     useEffect(() => {
         if (id) loadActivity(id);
     }, [id, loadActivity])
 
-    if (loadingInitial || !selectedActivity) return <LoadingComponent />;
+    if (loadingInitial || !activity) return <LoadingComponent />;
 
     return (
         <Grid>
             <Grid.Column width={10}>
-                <ActivityDetailedHeader activity={selectedActivity} />
-                <ActivityDetailedInfo activity={selectedActivity}/>
+                <ActivityDetailedHeader activity={activity} />
+                <ActivityDetailedInfo activity={activity}/>
                 <ActivityDetailedChat />
             </Grid.Column>
             <Grid.Column width={6} >
-                <ActivityDetailedSidebar />
+                <ActivityDetailedSidebar activity={activity} />
             </Grid.Column>
         </Grid>
     )
